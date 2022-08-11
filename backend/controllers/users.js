@@ -9,9 +9,10 @@ router.post('/', async (req, res) => {
 
     const user = await User.create({
         ...rest,
-        passwordDigest: await bcrypt.hash(password, 10)
+        password_digest: await bcrypt.hash(password, 10)
     })
 
+    console.log(user)
     res.json(user)
 })
 
