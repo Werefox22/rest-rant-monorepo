@@ -81,32 +81,57 @@ router.delete('/:placeId', async (req, res) => {
     }
 })
 
+// post comment
 router.post('/:placeId/comments', async (req, res) => {
     const placeId = Number(req.params.placeId)
 
     req.body.rant = req.body.rant ? true : false
 
+    // find place
     const place = await Place.findOne({
         where: { placeId: placeId }
     })
 
+    // make sure place exists
     if (!place) {
         res.status(404).json({ message: `Could not find place with id "${placeId}"` })
     }
 
-    const author = await User.findOne({
-        where: { userId: req.body.authorId }
-    })
+    // find current user
+    let currentUser
+    try {
+        const [ authenticationMethod, token ] = req.headers.authorization.split(' ')
 
-    if (!author) {
-        res.status(404).json({ message: `Could not find author with id "${req.body.authorId}"` })
+        if (authenticationMethod == 'Bearer') {
+            const result = await jwt.decode(process.env.JWT_SECRET, token)
+
+            const { id } = result.value
+
+            currentUser = await User.findOne({
+                where: {
+                    userId: id
+                }
+            })
+        }
+    } catch {
+        currentUser = null
     }
 
+    // make sure user exists
+    if (!currentUser) {
+        return res.status(404).json({
+            message: `You must be logged in to leave a comment.`
+        })
+    }
+
+    // make comment
     const comment = await Comment.create({
         ...req.body,
+        authorId: currentUser.userId,
         placeId: placeId
     })
 
+    // post comment
     res.send({
         ...comment.toJSON(),
         author
