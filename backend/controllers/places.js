@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const db = require("../models")
+const jwt = require('json-web-token')
 
 const { Place, Comment, User } = db
 
@@ -105,6 +106,7 @@ router.post('/:placeId/comments', async (req, res) => {
         if (authenticationMethod == 'Bearer') {
             const result = await jwt.decode(process.env.JWT_SECRET, token)
 
+            console.log(result)
             const { id } = result.value
 
             currentUser = await User.findOne({
@@ -113,7 +115,8 @@ router.post('/:placeId/comments', async (req, res) => {
                 }
             })
         }
-    } catch {
+    } catch (err) {
+        console.log(err)
         currentUser = null
     }
 
@@ -134,7 +137,7 @@ router.post('/:placeId/comments', async (req, res) => {
     // post comment
     res.send({
         ...comment.toJSON(),
-        author
+        author: currentUser
     })
 })
 
