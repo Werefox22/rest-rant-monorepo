@@ -9,7 +9,6 @@ workflows:
           app-dir: ~/project/backend
       - eb/deploy:
           app-dir: ~/project/backend
-          application-name: Rest Rant
           context: aws-creds
           environment-name: Restrant-env
           filters:
