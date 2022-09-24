@@ -5,7 +5,7 @@ orbs:
 workflows:
   elastic-beanstalk-workflow:
     jobs:
-      - node/test
+      - node/test:
           app-dir: ~/project/backend
       - eb/deploy:
           app-dir: ~/project/backend
