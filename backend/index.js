@@ -12,9 +12,7 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'public', 'build')))
-}
+
 
 // Controllers & Routes
 
@@ -23,6 +21,10 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/places', require('./controllers/places'))
 app.use('/users', require('./controllers/users'))
 app.use('/authentication', require('./controllers/authentication'))
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'public', 'build')))
+}
 
 // Listen for Connections
 app.listen(process.env.PORT, () => {
