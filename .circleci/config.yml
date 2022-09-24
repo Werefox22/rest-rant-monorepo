@@ -1,4 +1,4 @@
-version: '2.1'
+version: 2.1
 orbs:
   eb: circleci/aws-elastic-beanstalk@1.0.0
   node: circleci/node@4.1.0
